@@ -2,10 +2,12 @@ syntax = "proto3";
 
 package hook;
 
-import "google/protobuf/empty.proto";
-
 service Hook {
-  rpc Subscribe(google.protobuf.Empty) returns (stream SerializedVersionedTransaction);
+  rpc Subscribe(SubscribeRequest) returns (stream SerializedVersionedTransaction);
+}
+
+message SubscribeRequest {
+  string auth_code = 1;
 }
 
 message SerializedVersionedTransaction {
