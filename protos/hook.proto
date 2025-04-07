@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package hook;
+
+import "google/protobuf/empty.proto";
+
+service Hook {
+  rpc Subscribe(google.protobuf.Empty) returns (stream SerializedVersionedTransaction);
+}
+
+message SerializedVersionedTransaction {
+  bytes content = 1;
+}
