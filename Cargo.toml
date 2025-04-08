@@ -4,11 +4,11 @@ version = "0.2.0"
 edition = "2024"
 
 [dependencies]
-tonic = "*"
-prost = "*"
+tonic = { version = "0.10.2", features = ["tls", "tls-roots", "tls-webpki-roots"] }
+prost = "0.12.1"
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync", "time"] }
 tokio-stream = "0.1"
 
 
 [build-dependencies]
-tonic-build = "*"
+tonic-build = "0.10.2"
