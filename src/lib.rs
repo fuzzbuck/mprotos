@@ -26,7 +26,7 @@ pub mod vhook {
     #[derive(Debug, Clone, Serialize, Deserialize)]
     pub struct VHookBundleStatus {
         pub bundle_id: String,
-        pub error: Option<RpcBundleExecutionError>
+        pub serialized_error: Option<Vec<u8>>
     }
     
 
