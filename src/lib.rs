@@ -4,14 +4,29 @@ pub mod hook_proto {
 }
 
 pub mod vhook {
+    use std::fmt::{Display, Formatter};
     use serde::{Deserialize, Serialize};
-    use solana_sdk::signature::Signature;
+    use serde_with::serde_as;
     use thiserror::Error;
+
+    #[serde_as]
+    #[derive(Debug, Clone, Serialize, Deserialize)]
+    pub struct SerializedSignature {
+        #[serde_as(as = "[_; 64]")]
+        inner: [u8; 64]
+    }
+    
+    impl Display for SerializedSignature {
+        fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+            write!(f, "{}", bs58::encode(&self.inner).into_string())
+        }
+    }
+
 
     #[derive(Debug, Clone, Serialize, Deserialize)]
     pub struct VHookBundleStatus {
         bundle_uuid: String,
-        signatures: Vec<Signature>,
+        signatures: Vec<SerializedSignature>,
         error: Option<RpcBundleExecutionError>
     }
     
@@ -40,6 +55,6 @@ pub mod vhook {
         TipError(String),
 
         #[error("A transaction in the bundle failed to execute: [signature={0}, error={1}]")]
-        TransactionFailure(Signature, String),
+        TransactionFailure(SerializedSignature, String),
     }
 }
