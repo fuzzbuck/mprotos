@@ -25,9 +25,8 @@ pub mod vhook {
 
     #[derive(Debug, Clone, Serialize, Deserialize)]
     pub struct VHookBundleStatus {
-        bundle_uuid: String,
-        signatures: Vec<SerializedSignature>,
-        error: Option<RpcBundleExecutionError>
+        pub bundle_id: String,
+        pub error: Option<RpcBundleExecutionError>
     }
     
 
