@@ -3,6 +3,12 @@ pub mod hook_proto {
     tonic::include_proto!("vhook");
 }
 
+pub fn get_unix_epoch() -> u64 {
+    let now = std::time::SystemTime::now();
+    let duration = now.duration_since(std::time::UNIX_EPOCH).unwrap();
+    duration.as_millis() as u64
+}
+
 pub mod vhook {
     use std::fmt::{Display, Formatter};
     use serde::{Deserialize, Serialize};
@@ -26,7 +32,18 @@ pub mod vhook {
     #[derive(Debug, Clone, Serialize, Deserialize)]
     pub struct VHookBundleStatus {
         pub bundle_id: String,
+        pub executed_at: u64,
         pub serialized_error: Option<Vec<u8>>
+    }
+    
+    impl VHookBundleStatus {
+        pub fn try_get_error(&self) -> Option<RpcBundleExecutionError> {
+            if let Some(serialized_error) = &self.serialized_error {
+                bincode::deserialize::<RpcBundleExecutionError>(serialized_error).ok()
+            } else {
+                None
+            }
+        }
     }
     
 
