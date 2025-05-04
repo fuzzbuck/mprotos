@@ -9,6 +9,7 @@ service ValidatorHook {
 
 message SubmitBundleRequest {
   string auth_code = 1;
+  bytes bundle = 2;
 }
 
 message SubmitBundleResponse {
