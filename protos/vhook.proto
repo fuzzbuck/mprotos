@@ -4,6 +4,15 @@ package vhook;
 
 service ValidatorHook {
   rpc Subscribe(SubscribeBundleResults) returns (stream SerializedBundleResult);
+  rpc SubmitBundle(SubmitBundleRequest) returns (SubmitBundleResponse);
+}
+
+message SubmitBundleRequest {
+  string auth_code = 1;
+}
+
+message SubmitBundleResponse {
+  bool success = 1;
 }
 
 message SubscribeBundleResults {
