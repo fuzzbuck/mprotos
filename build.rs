@@ -1,4 +1,13 @@
 fn main() {
-    tonic_build::compile_protos("protos/hook.proto")
-        .unwrap_or_else(|e| panic!("Failed to compile protos {:?}", e));
+    tonic_build::configure()
+        .build_server(true)
+        .build_client(true)
+        .compile(
+            &[
+                "protos/hook.proto",
+                "protos/vhook.proto"
+            ],
+            &[] as &[&str],
+        )
+        .unwrap();
 }

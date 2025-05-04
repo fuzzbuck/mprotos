@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package vhook;
+
+service ValidatorHook {
+  rpc Subscribe(SubscribeBundleResults) returns (stream SerializedBundleResult);
+}
+
+message SubscribeBundleResults {
+  string auth_code = 1;
+}
+
+message SerializedBundleResult {
+  bytes content = 1;
+}
+

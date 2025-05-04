@@ -8,7 +8,9 @@ tonic = { version = "=0.10.2", features = ["tls", "tls-roots", "tls-webpki-roots
 prost = "=0.12.1"
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync", "time"] }
 tokio-stream = "0.1"
-
+solana-sdk = "*"
+thiserror = "2.0.12"
+serde = { version = "1.0.219", features = ["derive"] }
 
 [build-dependencies]
 tonic-build = "=0.10.2"
