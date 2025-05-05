@@ -10,19 +10,25 @@ pub fn get_unix_epoch() -> u64 {
 }
 
 pub mod vhook {
-    use std::fmt::{Display, Formatter};
+    use std::fmt::{Debug, Display, Formatter};
     use serde::{Deserialize, Serialize};
     use serde_with::serde_as;
     use thiserror::Error;
 
     #[serde_as]
-    #[derive(Debug, Clone, Serialize, Deserialize)]
+    #[derive(Clone, Serialize, Deserialize)]
     pub struct SerializedSignature {
         #[serde_as(as = "[_; 64]")]
         inner: [u8; 64]
     }
     
     impl Display for SerializedSignature {
+        fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+            write!(f, "{}", bs58::encode(&self.inner).into_string())
+        }
+    }
+    
+    impl Debug for SerializedSignature {
         fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
             write!(f, "{}", bs58::encode(&self.inner).into_string())
         }
