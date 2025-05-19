@@ -3,8 +3,15 @@ syntax = "proto3";
 package vhook;
 
 service ValidatorHook {
-  rpc Subscribe(SubscribeBundleResults) returns (stream SerializedBundleResult);
+  rpc Subscribe(AuthCodeRequest) returns (stream SerializedBundleResult);
   rpc SubmitBundle(SubmitBundleRequest) returns (SubmitBundleResponse);
+  rpc SubscribeJitoBundle(AuthCodeRequest) returns (stream SerializedBundle);
+}
+
+
+// this is just bincode::serialize(Vec<VersionedTransaction>)
+message SerializedBundle {
+    bytes content = 1;
 }
 
 message SubmitBundleRequest {
@@ -15,7 +22,7 @@ message SubmitBundleResponse {
   bool success = 1;
 }
 
-message SubscribeBundleResults {
+message AuthCodeRequest {
   string auth_code = 1;
 }
 
