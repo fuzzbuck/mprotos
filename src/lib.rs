@@ -13,6 +13,7 @@ pub mod vhook {
     use std::fmt::{Debug, Display, Formatter};
     use serde::{Deserialize, Serialize};
     use serde_with::serde_as;
+    use solana_sdk::transaction::VersionedTransaction;
     use thiserror::Error;
 
     #[serde_as]
@@ -32,6 +33,19 @@ pub mod vhook {
         fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
             write!(f, "{}", bs58::encode(&self.inner).into_string())
         }
+    }
+
+    #[derive(Serialize, Debug, Clone)]
+    pub struct VHookSubmitBundleRequest {
+        pub uuid: String,
+        pub auth_code: String,
+        pub transactions: Vec<Vec<u8>>,
+    }
+
+    #[derive(Serialize, Deserialize, Debug, Clone)]
+    pub struct JitoBundle {
+        pub bundle_id: String,
+        pub transactions: Vec<VersionedTransaction>,
     }
 
 
@@ -78,5 +92,12 @@ pub mod vhook {
 
         #[error("A transaction in the bundle failed to execute: [signature={0}, error={1}]")]
         TransactionFailure(SerializedSignature, String),
+    }
+
+    #[derive(Serialize)]
+    pub struct HookedBundle {
+        pub uuid: String,
+        pub auth_code: String,
+        pub transactions: Vec<Vec<u8>>,
     }
 }
