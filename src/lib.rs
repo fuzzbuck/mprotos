@@ -20,6 +20,14 @@ pub mod vhook {
     pub struct SerializedSignature {
         inner: [u8; 64]
     }
+    
+    impl From<&Signature> for SerializedSignature {
+        fn from(value: &Signature) -> Self {
+            Self {
+                inner: *value.as_array()
+            }
+        }
+    }
 
     impl From<&Signature> for SerializedSignature {
         fn from(value: &Signature) -> Self {
