@@ -18,16 +18,7 @@ pub mod vhook {
 
     #[derive(Clone)]
     pub struct SerializedSignature {
-        inner: [u8; 64]
-    }
-    
-
-    impl From<&Signature> for SerializedSignature {
-        fn from(value: &Signature) -> Self {
-            Self {
-                inner: value.as_array().clone()
-            }
-        }
+        pub inner: [u8; 64]
     }
 
     impl serde::Serialize for SerializedSignature {
