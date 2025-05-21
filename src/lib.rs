@@ -12,13 +12,21 @@ pub fn get_unix_epoch() -> u64 {
 pub mod vhook {
     use std::fmt::{Debug, Display, Formatter};
     use serde::{Deserialize, Serialize};
-    use serde_with::serde_as;
+    use solana_sdk::signature::Signature;
     use solana_sdk::transaction::VersionedTransaction;
     use thiserror::Error;
 
     #[derive(Clone)]
     pub struct SerializedSignature {
         inner: [u8; 64]
+    }
+
+    impl From<&Signature> for SerializedSignature {
+        fn from(value: &Signature) -> Self {
+            Self {
+                inner: value.as_array().clone()
+            }
+        }
     }
 
     impl serde::Serialize for SerializedSignature {
