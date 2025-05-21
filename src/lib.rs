@@ -12,12 +12,15 @@ pub fn get_unix_epoch() -> u64 {
 pub mod vhook {
     use std::fmt::{Debug, Display, Formatter};
     use serde::{Deserialize, Serialize};
+    use serde_with::serde_as;
     use solana_sdk::signature::Signature;
     use solana_sdk::transaction::VersionedTransaction;
     use thiserror::Error;
 
-    #[derive(Clone)]
+    #[serde_as]
+    #[derive(Clone, Deserialize)]
     pub struct SerializedSignature {
+        #[serde_as(as = "[_; 64]")]
         pub inner: [u8; 64]
     }
 
@@ -30,24 +33,7 @@ pub mod vhook {
             serializer.serialize_str(&encoded)
         }
     }
-
-    impl<'de> serde::Deserialize<'de> for SerializedSignature {
-        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-        where
-            D: serde::Deserializer<'de>,
-        {
-            let s = String::deserialize(deserializer)?;
-            let decoded = bs58::decode(&s)
-                .into_vec()
-                .map_err(serde::de::Error::custom)?;
-            if decoded.len() != 64 {
-                return Err(serde::de::Error::custom("Invalid length for SerializedSignature"));
-            }
-            let mut inner = [0u8; 64];
-            inner.copy_from_slice(&decoded);
-            Ok(SerializedSignature { inner })
-        }
-    }
+    
     
     impl Display for SerializedSignature {
         fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
