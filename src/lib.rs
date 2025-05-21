@@ -16,11 +16,37 @@ pub mod vhook {
     use solana_sdk::transaction::VersionedTransaction;
     use thiserror::Error;
 
-    #[serde_as]
-    #[derive(Clone, Serialize, Deserialize)]
+    #[derive(Clone)]
     pub struct SerializedSignature {
-        #[serde_as(as = "[_; 64]")]
         inner: [u8; 64]
+    }
+
+    impl serde::Serialize for SerializedSignature {
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: serde::Serializer,
+        {
+            let encoded = bs58::encode(&self.inner).into_string();
+            serializer.serialize_str(&encoded)
+        }
+    }
+
+    impl<'de> serde::Deserialize<'de> for SerializedSignature {
+        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+            D: serde::Deserializer<'de>,
+        {
+            let s = String::deserialize(deserializer)?;
+            let decoded = bs58::decode(&s)
+                .into_vec()
+                .map_err(serde::de::Error::custom)?;
+            if decoded.len() != 64 {
+                return Err(serde::de::Error::custom("Invalid length for SerializedSignature"));
+            }
+            let mut inner = [0u8; 64];
+            inner.copy_from_slice(&decoded);
+            Ok(SerializedSignature { inner })
+        }
     }
     
     impl Display for SerializedSignature {
@@ -34,6 +60,7 @@ pub mod vhook {
             write!(f, "{}", bs58::encode(&self.inner).into_string())
         }
     }
+
 
     #[derive(Serialize, Debug, Clone)]
     pub struct VHookSubmitBundleRequest {
@@ -99,5 +126,40 @@ pub mod vhook {
         pub uuid: String,
         pub auth_code: String,
         pub transactions: Vec<Vec<u8>>,
+    }
+
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+        use serde_json;
+        use bs58;
+
+        #[test]
+        fn test_serialize_deserialize() {
+            let data = [42u8; 64];
+            let sig = SerializedSignature { inner: data };
+            let json = serde_json::to_string(&sig).unwrap();
+            println!("SerializedSignature base58: {}", json);
+            let decoded: SerializedSignature = serde_json::from_str(&json).unwrap();
+            assert_eq!(sig.inner, decoded.inner);
+        }
+
+        #[test]
+        fn test_display_and_debug() {
+            let data = [1u8; 64];
+            let sig = SerializedSignature { inner: data };
+            let encoded = bs58::encode(&data).into_string();
+            assert_eq!(format!("{}", sig), encoded);
+            assert_eq!(format!("{:?}", sig), encoded);
+        }
+
+        #[test]
+        fn test_deserialize_invalid_length() {
+            // 63 bytes, should fail
+            let short = bs58::encode(&[0u8; 63]).into_string();
+            let json = format!("\"{}\"", short);
+            let result: Result<SerializedSignature, _> = serde_json::from_str(&json);
+            assert!(result.is_err());
+        }
     }
 }
