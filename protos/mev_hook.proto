@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package mev_hook;
+
+service MevHook {
+  rpc DropTransaction(DropTransactionRequest) returns (DropTransactionResponse);
+}
+
+// this is just bincode::serialize(VersionedTransaction)
+message DropTransactionRequest {
+  bytes serialized_versioned_transaction = 1;
+}
+
+message DropTransactionResponse {
+  bool should_drop = 1;
+}

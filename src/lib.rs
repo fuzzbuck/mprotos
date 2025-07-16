@@ -1,6 +1,7 @@
 pub mod hook_proto {
     tonic::include_proto!("hook");
     tonic::include_proto!("vhook");
+    tonic::include_proto!("mev_hook");
 }
 
 pub fn get_unix_epoch() -> u64 {
