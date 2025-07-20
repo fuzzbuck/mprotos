@@ -1361,6 +1361,7 @@ version = "0.2.0"
 dependencies = [
  "bincode",
  "bs58",
+ "futures-core",
  "prost 0.12.6",
  "serde",
  "serde_json",

@@ -9,6 +9,7 @@ prost = "0.12.1"
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync", "time"] }
 tokio-stream = "0.1"
 thiserror = "2.0.12"
+futures-core = "0.3"
 solana-sdk = "2"
 serde = { version = "1", features = ["derive"] }
 serde_with = "3.12.0"

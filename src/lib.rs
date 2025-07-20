@@ -14,7 +14,6 @@ pub mod vhook {
     use std::fmt::{Debug, Display, Formatter};
     use serde::{Deserialize, Serialize};
     use serde_with::serde_as;
-    use solana_sdk::signature::Signature;
     use solana_sdk::transaction::VersionedTransaction;
     use thiserror::Error;
 
